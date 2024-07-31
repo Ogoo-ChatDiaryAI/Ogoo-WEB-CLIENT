@@ -12,7 +12,10 @@
   "dependencies": {
     "@npmcli/config": "^8.3.4",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.2.1",
+    "react-router-dom": "^6.25.1",
+    "styled-components": "^6.1.12"
   },
   "devDependencies": {
     "@eslint/js": "^9.7.0",
