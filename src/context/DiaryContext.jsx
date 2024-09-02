@@ -40,3 +40,5 @@ export const DiaryProvider = ({ children }) => {
 
   return <DiaryContext.Provider value={{ diaries, setDiaries }}>{children}</DiaryContext.Provider>;
 };
+
+export default DiaryContext;

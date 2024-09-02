@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Modal from "../components/Modal";
 import Sidebar from "../components/Sidebar";
-import { useDiary } from "../context/DiaryContext";
+import { useDiary } from "../context/useDiary";
 
 const DiaryContainer = styled.div`
   display: flex;

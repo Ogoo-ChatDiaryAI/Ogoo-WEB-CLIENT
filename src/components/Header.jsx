@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useDiary } from "../context/DiaryContext";
+import { useDiary } from "../context/useDiary";
 
 const HeaderContainer = styled.div`
   width: calc(100% - 140px);
