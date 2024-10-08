@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import IntroCard from "../components/IntroCard";
 import { useAuth } from "../context/useAuth";
 
+
 const IntroContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -88,6 +89,11 @@ const cards = [
 ];
 
 const Intro = () => {
+  
+  
+  
+
+
   const [currentCard, setCurrentCard] = useState(0);
   const { login } = useAuth();
   const navigate = useNavigate();

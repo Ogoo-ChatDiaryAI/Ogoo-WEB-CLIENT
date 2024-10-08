@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useRef, useState } from "react";
 import { FaPaperPlane } from "react-icons/fa";
 import styled, { keyframes } from "styled-components";
 import Message from "./Message";
+import { OpenAI } from "openai";
 
 const ChatroomContainer = styled.div`
   margin-left: 100px;
@@ -95,25 +96,58 @@ const LoadingDots = styled.div`
 `;
 
 const Chatroom = () => {
+  const configuration = {
+    organization: import.meta.env.VITE_OPENAI_ORG_ID,
+    apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+    dangerouslyAllowBrowser: true,
+  };
+  const openai = new OpenAI(configuration);
+
+  async function callChat() {
+    const stream = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: "Say this is a test" }],
+      stream: true,
+    });
+    for await (const chunk of stream) {
+      process.stdout.write(chunk.choices[0]?.delta?.content || "");
+    }
+  }
+  //"너는 따뜻하게 상대방의 말을 듣고, 대답해주는 사람이야. 그냥 대답만 하는게 아니라, 적절한 질문도 하면서 오늘 하루 있었던 일들을 전부 파악하며, 감정을 잡아 공감해주는 상담사역할이야. 사용자와 대화를 주고 받은 뒤 사용자의 대화 내용으로 일기를 작성할 수 있을만큼 필요한 질문과 반응들을 상대방에게 잘 보여줘야 해."
+  const callGPT = async (userInputString) => {
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "system",
+          content:
+            "넌 오늘 하루 있었던 일을 묻고, 적절한 질문과 공감을 통해 이야기를 반말로 들어주는 상담사야",
+        },
+        { role: "user", content: userInputString },
+      ],
+    });
+    //console.log("response:", response);
+    return response.choices[0].message.content;
+  };
+
+  const nickName = "준혁";
+
+  const getNowDate = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const stringDate = `${year}-${month}-${day}`;
+
+    return stringDate;
+  };
+
   const [messages, setMessages] = useState([
-    { text: "안녕!", isUser: false, date: "2023-07-29" },
-    { text: "오늘 하루는 어땠어??", isUser: false, date: "2023-07-29" },
     {
-      text: "오늘 드디어 시험이 끝났어! 마침내 난 자유의 몸이 된거야 우하하",
-      isUser: true,
-      date: "2023-07-29",
-    },
-    {
-      text: "와! 드디어 끝났구나!! 고생했어! ㅎㅎ 자유의 몸이 된 소감이 어때? 오늘의 계획은 있니?",
+      text: `${nickName}! 오늘 하루는 어땠어? 이야기를 들려줘 😎`,
       isUser: false,
-      date: "2023-07-29",
+      date: getNowDate(),
     },
-    {
-      text: "너무너무너무 행복해!! 일단 오늘은 하루종일 자고 내일은 콘서트를 보러갈거야 헤헤",
-      isUser: true,
-      date: "2023-07-30",
-    },
-    { text: "헉 재밌겠다! 무슨 콘서트야?", isUser: false, date: "2023-07-30" },
   ]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -123,21 +157,19 @@ const Chatroom = () => {
     setNewMessage(e.target.value);
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (newMessage.trim() !== "") {
       const currentDate = new Date().toISOString().split("T")[0]; // 현재 날짜
       setMessages([...messages, { text: newMessage, isUser: true, date: currentDate }]);
       setNewMessage("");
       setLoading(true);
 
-      // 로딩 애니메이션을 잠시 보여준 후 상대방 메시지 추가
-      setTimeout(() => {
-        setLoading(false);
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { text: "와 대박!", isUser: false, date: currentDate },
-        ]);
-      }, 1500); // 1.5초 후에 메시지 추가
+      const response = await callGPT(newMessage);
+      setLoading(false);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: response, isUser: false, date: currentDate },
+      ]);
     }
   };
 
