@@ -30,6 +30,7 @@ const KakaoAuth = () => {
     }
   };
 
+  getAccessToken();
   return <div></div>;
 };
 
