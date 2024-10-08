@@ -1,8 +1,159 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { FaPaperPlane } from "react-icons/fa";
 import styled, { keyframes } from "styled-components";
 import Message from "./Message";
 import { OpenAI } from "openai";
+
+const Chatroom = () => {
+  const nickName = "준혁";
+  const getNowDate = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const stringDate = `${year}-${month}-${day}`;
+
+    return stringDate;
+  };
+
+  const [messages, setMessages] = useState([
+    {
+      text: `${nickName}! 오늘 하루는 어땠어? 이야기를 들려줘 😎`,
+      isUser: false,
+      date: getNowDate(),
+    },
+  ]);
+  //시작은 대략 300토큰 사용 -> 점점 증가하며 1000토큰 사용이 평균, 1백만 토큰(대략 5천원) 사용 가능하다는 가정하에 1000번 대화할 수 있음
+  const [newMessage, setNewMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const chatAreaRef = useRef();
+  const [gptRequiredInfo, setGptRequiredInfo] = useState([
+    {
+      role: "system",
+      content:
+        "넌 오늘 하루 있었던 일을 묻고, 적절한 질문과 공감을 통해 이야기를 반말로 들어주는 상담사야. 그리고 사용자와의 대화를 통해 일기를 추후 작성할거야. 그래서 일기로 작성하기 좋은 형태의 대화가 진행되도록 유도해줘. 근데, 너는 너무 대답을 길게 하지는 마. 필요할 때만 길게 하고, 왠만하면 오늘 무슨 일이 있었는지, 무슨 감정을 느꼈는지를 파악하기 위한 적절한 유도 질문을 해줘",
+    },
+  ]);
+
+  const configuration = {
+    organization: import.meta.env.VITE_OPENAI_ORG_ID,
+    apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+    dangerouslyAllowBrowser: true,
+  };
+  const openai = new OpenAI(configuration);
+
+  const callGPT = async (updatedInfo) => {
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: updatedInfo,
+    });
+
+    return response.choices[0].message.content;
+  };
+
+  const handleInputChange = (e) => {
+    setNewMessage(e.target.value);
+  };
+
+  const handleSendMessage = async () => {
+    if (newMessage.trim() !== "") {
+      const currentDate = new Date().toISOString().split("T")[0]; // 현재 날짜
+      const userMessage = { text: newMessage, isUser: true, date: currentDate };
+
+      //새로운 메세지 추가하여 messages 관리
+      setMessages((prevMessages) => [...prevMessages, userMessage]);
+      const updatedInfo = [
+        ...gptRequiredInfo,
+        {
+          role: "user",
+          content: newMessage,
+        },
+      ];
+      setGptRequiredInfo(updatedInfo);
+      setNewMessage("");
+      setLoading(true);
+
+      //gpt로부터 응답 받아오는 로직
+
+      try {
+        const response = await callGPT(updatedInfo);
+        const gptMessage = { text: response, isUser: false, date: currentDate };
+        setMessages((prevMessages) => [...prevMessages, gptMessage]);
+        setGptRequiredInfo((prevInfo) => [
+          ...prevInfo,
+          {
+            role: "assistant",
+            content: response,
+          },
+        ]);
+      } catch (error) {
+        //console.error("GPT 호출 에러: ", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleEnter = (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  useLayoutEffect(() => {
+    // 새로운 메시지가 추가될 때마다 스크롤을 맨 아래로 이동
+    if (chatAreaRef.current) {
+      chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  return (
+    <ChatroomContainer>
+      <ChatAreaContainer ref={chatAreaRef}>
+        {messages.map((msg, index) => {
+          const showDateDivider = index === 0 || messages[index].date !== messages[index - 1].date;
+          return (
+            <Message
+              key={index}
+              text={msg.text}
+              isUser={msg.isUser}
+              showDateDivider={showDateDivider}
+              date={msg.date}
+            />
+          );
+        })}
+        {loading && (
+          <Message
+            text={
+              <LoadingDots>
+                <span></span>
+                <span></span>
+                <span></span>
+              </LoadingDots>
+            }
+            isUser={false}
+            showDateDivider={false}
+          />
+        )}
+      </ChatAreaContainer>
+      <ChatInputContainer>
+        <Input
+          type="text"
+          placeholder="메시지 입력"
+          value={newMessage}
+          onChange={handleInputChange}
+          onKeyDown={handleEnter}
+        />
+        <SendButton onClick={handleSendMessage}>
+          <FaPaperPlane />
+        </SendButton>
+      </ChatInputContainer>
+    </ChatroomContainer>
+  );
+};
+
+export default Chatroom;
 
 const ChatroomContainer = styled.div`
   margin-left: 100px;
@@ -94,142 +245,3 @@ const LoadingDots = styled.div`
     animation-delay: 0.6s;
   }
 `;
-
-const Chatroom = () => {
-  const configuration = {
-    organization: import.meta.env.VITE_OPENAI_ORG_ID,
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-    dangerouslyAllowBrowser: true,
-  };
-  const openai = new OpenAI(configuration);
-
-  async function callChat() {
-    const stream = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: "Say this is a test" }],
-      stream: true,
-    });
-    for await (const chunk of stream) {
-      process.stdout.write(chunk.choices[0]?.delta?.content || "");
-    }
-  }
-  //"너는 따뜻하게 상대방의 말을 듣고, 대답해주는 사람이야. 그냥 대답만 하는게 아니라, 적절한 질문도 하면서 오늘 하루 있었던 일들을 전부 파악하며, 감정을 잡아 공감해주는 상담사역할이야. 사용자와 대화를 주고 받은 뒤 사용자의 대화 내용으로 일기를 작성할 수 있을만큼 필요한 질문과 반응들을 상대방에게 잘 보여줘야 해."
-  const callGPT = async (userInputString) => {
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content:
-            "넌 오늘 하루 있었던 일을 묻고, 적절한 질문과 공감을 통해 이야기를 반말로 들어주는 상담사야",
-        },
-        { role: "user", content: userInputString },
-      ],
-    });
-    //console.log("response:", response);
-    return response.choices[0].message.content;
-  };
-
-  const nickName = "준혁";
-
-  const getNowDate = () => {
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const stringDate = `${year}-${month}-${day}`;
-
-    return stringDate;
-  };
-
-  const [messages, setMessages] = useState([
-    {
-      text: `${nickName}! 오늘 하루는 어땠어? 이야기를 들려줘 😎`,
-      isUser: false,
-      date: getNowDate(),
-    },
-  ]);
-  const [newMessage, setNewMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const chatAreaRef = useRef();
-
-  const handleInputChange = (e) => {
-    setNewMessage(e.target.value);
-  };
-
-  const handleSendMessage = async () => {
-    if (newMessage.trim() !== "") {
-      const currentDate = new Date().toISOString().split("T")[0]; // 현재 날짜
-      setMessages([...messages, { text: newMessage, isUser: true, date: currentDate }]);
-      setNewMessage("");
-      setLoading(true);
-
-      const response = await callGPT(newMessage);
-      setLoading(false);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: response, isUser: false, date: currentDate },
-      ]);
-    }
-  };
-
-  const handleEnter = (event) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-      handleSendMessage();
-    }
-  };
-
-  useLayoutEffect(() => {
-    // 새로운 메시지가 추가될 때마다 스크롤을 맨 아래로 이동
-    if (chatAreaRef.current) {
-      chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  return (
-    <ChatroomContainer>
-      <ChatAreaContainer ref={chatAreaRef}>
-        {messages.map((msg, index) => {
-          const showDateDivider = index === 0 || messages[index].date !== messages[index - 1].date;
-          return (
-            <Message
-              key={index}
-              text={msg.text}
-              isUser={msg.isUser}
-              showDateDivider={showDateDivider}
-              date={msg.date}
-            />
-          );
-        })}
-        {loading && (
-          <Message
-            text={
-              <LoadingDots>
-                <span></span>
-                <span></span>
-                <span></span>
-              </LoadingDots>
-            }
-            isUser={false}
-            showDateDivider={false}
-          />
-        )}
-      </ChatAreaContainer>
-      <ChatInputContainer>
-        <Input
-          type="text"
-          placeholder="메시지 입력"
-          value={newMessage}
-          onChange={handleInputChange}
-          onKeyDown={handleEnter}
-        />
-        <SendButton onClick={handleSendMessage}>
-          <FaPaperPlane />
-        </SendButton>
-      </ChatInputContainer>
-    </ChatroomContainer>
-  );
-};
-
-export default Chatroom;
