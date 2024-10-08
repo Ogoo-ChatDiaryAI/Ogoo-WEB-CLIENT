@@ -3,8 +3,10 @@ import { FaPaperPlane } from "react-icons/fa";
 import styled, { keyframes } from "styled-components";
 import Message from "./Message";
 import { OpenAI } from "openai";
+import { useConvContext } from "../context/ConvContext";
 
 const Chatroom = () => {
+  const { conversation, setConversation } = useConvContext();
   const nickName = "준혁";
   const getNowDate = () => {
     const date = new Date();
@@ -16,13 +18,12 @@ const Chatroom = () => {
     return stringDate;
   };
 
-  const [messages, setMessages] = useState([
-    {
-      text: `${nickName}! 오늘 하루는 어땠어? 이야기를 들려줘 😎`,
-      isUser: false,
-      date: getNowDate(),
-    },
-  ]);
+  //처음엔 전역 변수 conversation으로 초기화, 그 이후 messages 변하면 conversations에 반영
+  const [messages, setMessages] = useState(conversation);
+  useEffect(() => {
+    setConversation(messages);
+  }, [messages]);
+
   //시작은 대략 300토큰 사용 -> 점점 증가하며 1000토큰 사용이 평균, 1백만 토큰(대략 5천원) 사용 가능하다는 가정하에 1000번 대화할 수 있음
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);

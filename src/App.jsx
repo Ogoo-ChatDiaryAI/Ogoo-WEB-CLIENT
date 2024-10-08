@@ -7,21 +7,24 @@ import Home from "./pages/Home";
 import Intro from "./pages/Intro";
 import Report from "./pages/Report";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import ConvContextProvider from "./context/ConvContext";
 
 function App() {
   return (
     <AuthProvider>
-      <DiaryProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Intro />} />
-            <Route path="/home" element={<ProtectedRoute element={<Home />} />} />
-            <Route path="/chat" element={<ProtectedRoute element={<Chat />} />} />
-            <Route path="/diary" element={<ProtectedRoute element={<Diary />} />} />
-            <Route path="/report" element={<ProtectedRoute element={<Report />} />} />
-          </Routes>
-        </Router>
-      </DiaryProvider>
+      <ConvContextProvider>
+        <DiaryProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Intro />} />
+              <Route path="/home" element={<ProtectedRoute element={<Home />} />} />
+              <Route path="/chat" element={<ProtectedRoute element={<Chat />} />} />
+              <Route path="/diary" element={<ProtectedRoute element={<Diary />} />} />
+              <Route path="/report" element={<ProtectedRoute element={<Report />} />} />
+            </Routes>
+          </Router>
+        </DiaryProvider>
+      </ConvContextProvider>
     </AuthProvider>
   );
 }
