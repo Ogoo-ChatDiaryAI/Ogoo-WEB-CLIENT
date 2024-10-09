@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useDiary } from "../context/useDiary";
+import { instance } from "../api/axios";
+import { useConvContext } from "../context/ConvContext";
 
 const HeaderContainer = styled.div`
   width: calc(100% - 140px);
@@ -37,15 +39,26 @@ const EndChatButton = styled.button`
 const Header = ({ text, type }) => {
   const navigate = useNavigate();
   const { setDiaries } = useDiary();
+  const { conversation } = useConvContext();
 
-  const handleEnd = () => {
+  const handleEnd = async () => {
+    const apiConversation = conversation.map((obj) => ({
+      from: obj.isUser ? "user" : "Ogoo",
+      text: obj.text,
+    }));
+
+    const response = await instance.post("/chat/end", {
+      //chatSessionID: "아직 안정함",
+      conversation: apiConversation,
+    });
+
     // 대화 내용 기반으로 일기 생성
     const newDiary = {
       date: new Date().toLocaleDateString(),
-      emoji: "surprise",
+      emoji: response.data.emoji,
       image: null,
-      title: "New Diary Entry",
-      content: "This is the content of the new diary entry generated from the chat.",
+      title: response.data.diaryTitle,
+      content: response.data.diaryContent,
     };
 
     // DiaryContext를 업데이트하고 Diary 페이지로 이동
@@ -56,7 +69,9 @@ const Header = ({ text, type }) => {
   return (
     <HeaderContainer>
       <Title>{text}</Title>
-      {type === "chat" ? <EndChatButton onClick={handleEnd}>대화 종료</EndChatButton> : null}
+      {type === "chat" ? (
+        <EndChatButton onClick={() => handleEnd()}>대화 종료</EndChatButton>
+      ) : null}
     </HeaderContainer>
   );
 };
