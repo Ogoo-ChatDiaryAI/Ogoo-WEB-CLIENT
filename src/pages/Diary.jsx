@@ -48,10 +48,12 @@ const Diary = () => {
 
   const handleCardClick = (diary) => {
     setSelectedDiary(diary);
+    console.log(diaries);
   };
 
   const handleCloseModal = () => {
     setSelectedDiary(null); //선택된 모달(떠있는 모달)의미하는 듯
+    console.log(diaries);
   };
 
   const handleSave = async (updatedDiary) => {
@@ -61,15 +63,14 @@ const Diary = () => {
         diaryContent: updatedDiary.content,
       });
 
-      //여기 에러 발생 가능성 있음(다이어리를 찾는 로직이 id가 아니라 date 이기 때문)
       setDiaries((prevDiaries) =>
-        prevDiaries.map((diary) => (diary.date === updatedDiary.date ? updatedDiary : diary))
+        prevDiaries.map((diary) => (diary.diaryId === updatedDiary.diaryId ? updatedDiary : diary))
       );
       setSelectedDiary(updatedDiary);
     } catch (error) {
       //임시로 그냥 대충 저장해둠 (요청 안보내고)
       setDiaries((prevDiaries) =>
-        prevDiaries.map((diary) => (diary.date === updatedDiary.date ? updatedDiary : diary))
+        prevDiaries.map((diary) => (diary.diaryId === updatedDiary.diaryId ? updatedDiary : diary))
       );
       setSelectedDiary(updatedDiary);
     }

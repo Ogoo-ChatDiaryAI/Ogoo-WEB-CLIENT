@@ -216,7 +216,7 @@ const DiaryCard = ({ diaryId, date, emoji, image, title, content, type, onClick,
       {isEditing ? (
         <EditableTitle value={editableTitle} onChange={(e) => setEditableTitle(e.target.value)} />
       ) : (
-        <CardTitle>{editableTitle}</CardTitle>
+        <CardTitle>{editableTitle}</CardTitle> //모달 부분
       )}
       {isEditing ? (
         <EditableContent

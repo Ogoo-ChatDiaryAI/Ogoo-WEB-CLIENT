@@ -15,7 +15,7 @@ export const DiaryProvider = ({ children }) => {
         "Use the power of AI to help you summarize documents, highlight key points, find specific information, and more.",
     },
     {
-      diaryId: -1,
+      diaryId: -2,
       date: "2024.06.04",
       emoji: "angry",
       image: null,
@@ -24,7 +24,7 @@ export const DiaryProvider = ({ children }) => {
         "Use the power of AI to help you summarize documents, highlight key points, find specific information, and more.",
     },
     {
-      diaryId: -1,
+      diaryId: -3,
       date: "2024.06.05",
       emoji: "sad",
       image: null,
@@ -33,7 +33,7 @@ export const DiaryProvider = ({ children }) => {
         "Use the power of AI to help you summarize documents, highlight key points, find specific information, and more.",
     },
     {
-      diaryId: -1,
+      diaryId: -4,
       date: "2024.06.06",
       emoji: "fear",
       image: null,
