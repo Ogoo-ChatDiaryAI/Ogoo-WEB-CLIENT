@@ -43,7 +43,6 @@ const Header = ({ text, type }) => {
 
   //초기 생성된 일기를 받아오고, 저장까지 한번에 하는 로직
   const handleEnd = async () => {
-    console.log("handleEnd 실행");
     const apiConversation = conversation.map((obj) => ({
       from: obj.isUser ? "user" : "Ogoo",
       text: obj.text,
@@ -51,7 +50,7 @@ const Header = ({ text, type }) => {
 
     try {
       const response = await instance.post("/chat/end", {
-        //chatSessionID: "아직 안정함",
+        //chatSessionID: "아직 안정함", -> 그냥 헤더로 변경하기로 함
         conversation: apiConversation,
       });
 

@@ -1,4 +1,5 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
+import { instance } from "../api/axios";
 
 const DiaryContext = createContext();
 
@@ -41,6 +42,16 @@ export const DiaryProvider = ({ children }) => {
         "Use the power of AI to help you summarize documents, highlight key points, find specific information, and more.",
     },
   ]);
+
+  useEffect(() => {
+    const fetchDiaries = async () => {
+      try {
+        const response = await instance.get("/diary/list");
+        setDiaries(response.data.diaries); //해당 배열안의 객체에는 iamge 속성 자체가 없긴 함
+      } catch (error) {}
+    };
+    fetchDiaries();
+  }, []);
 
   return <DiaryContext.Provider value={{ diaries, setDiaries }}>{children}</DiaryContext.Provider>;
 };
