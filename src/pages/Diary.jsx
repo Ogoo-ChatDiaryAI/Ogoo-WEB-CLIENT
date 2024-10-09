@@ -48,12 +48,10 @@ const Diary = () => {
 
   const handleCardClick = (diary) => {
     setSelectedDiary(diary);
-    console.log(diaries);
   };
 
   const handleCloseModal = () => {
     setSelectedDiary(null); //선택된 모달(떠있는 모달)의미하는 듯
-    console.log(diaries);
   };
 
   const handleSave = async (updatedDiary) => {
@@ -81,18 +79,20 @@ const Diary = () => {
       <Header text={"나의 일기장"} />
       <Sidebar activeItem={"diary"} />
       <CardContainer>
-        {diaries.map((diary) => (
-          <DiaryCard
-            key={diary.diaryId}
-            diaryId={diary.diaryId}
-            date={diary.date}
-            emoji={diary.emoji}
-            image={diary.image}
-            title={diary.title}
-            type="simple"
-            onClick={() => handleCardClick(diary)}
-          />
-        ))}
+        {diaries.map((diary) => {
+          return (
+            <DiaryCard
+              key={diary.diaryId}
+              diaryId={diary.diaryId}
+              date={diary.date}
+              emoji={diary.emoji}
+              image={diary.image}
+              title={diary.title}
+              type="simple"
+              onClick={() => handleCardClick(diary)}
+            />
+          );
+        })}
       </CardContainer>
       {selectedDiary && (
         <Modal onClose={handleCloseModal}>
