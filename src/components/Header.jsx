@@ -54,6 +54,7 @@ const Header = ({ text, type }) => {
 
     // 대화 내용 기반으로 일기 생성
     const newDiary = {
+      diaryId: response.data.tempDiaryId,
       date: new Date().toLocaleDateString(),
       emoji: response.data.emoji,
       image: null,
