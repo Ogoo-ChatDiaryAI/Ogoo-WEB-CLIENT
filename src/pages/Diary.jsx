@@ -61,6 +61,7 @@ const Diary = () => {
         diaryContent: updatedDiary.content,
       });
 
+      //여기 에러 발생 가능성 있음(다이어리를 찾는 로직이 id가 아니라 date 이기 때문)
       setDiaries((prevDiaries) =>
         prevDiaries.map((diary) => (diary.date === updatedDiary.date ? updatedDiary : diary))
       );
