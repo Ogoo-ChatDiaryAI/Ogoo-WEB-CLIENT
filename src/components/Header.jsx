@@ -41,30 +41,53 @@ const Header = ({ text, type }) => {
   const { setDiaries } = useDiary();
   const { conversation } = useConvContext();
 
+  //초기 생성된 일기를 받아오고, 저장까지 한번에 하는 로직
   const handleEnd = async () => {
+    console.log("handleEnd 실행");
     const apiConversation = conversation.map((obj) => ({
       from: obj.isUser ? "user" : "Ogoo",
       text: obj.text,
     }));
 
-    const response = await instance.post("/chat/end", {
-      //chatSessionID: "아직 안정함",
-      conversation: apiConversation,
-    });
+    try {
+      const response = await instance.post("/chat/end", {
+        //chatSessionID: "아직 안정함",
+        conversation: apiConversation,
+      });
 
-    // 대화 내용 기반으로 일기 생성
-    const newDiary = {
-      diaryId: response.data.tempDiaryId,
-      date: new Date().toLocaleDateString(),
-      emoji: response.data.emoji,
-      image: null,
-      title: response.data.diaryTitle,
-      content: response.data.diaryContent,
-    };
+      const response2 = await instance.post("/chat/diary/save", {
+        title: response.data.diaryTitle,
+        diaryContent: response.data.diaryContent,
+        tempDiaryId: response.data.tempDiaryId,
+      });
+      // 대화 내용 기반으로 일기 생성
+      const newDiary = {
+        diaryId: response2.data.diaryId,
+        date: new Date().toLocaleDateString(),
+        emoji: response.data.emoji,
+        image: null,
+        title: response.data.diaryTitle,
+        content: response.data.diaryContent,
+      };
 
-    // DiaryContext를 업데이트하고 Diary 페이지로 이동
-    setDiaries((prevDiaries) => [...prevDiaries, newDiary]);
-    navigate("/diary", { state: { newDiary, showModal: true } });
+      // DiaryContext를 업데이트하고 Diary 페이지로 이동
+      setDiaries((prevDiaries) => [...prevDiaries, newDiary]);
+      navigate("/diary", { state: { newDiary, showModal: true } });
+    } catch (error) {
+      //아직 에러 -> 기본 생기는 거 테스트
+      const newDiary = {
+        diaryId: -1,
+        date: new Date().toLocaleDateString(),
+        emoji: "angry",
+        image: null,
+        title: "테스트",
+        content: "테스트입니다",
+      };
+
+      // DiaryContext를 업데이트하고 Diary 페이지로 이동
+      setDiaries((prevDiaries) => [...prevDiaries, newDiary]);
+      navigate("/diary", { state: { newDiary, showModal: true } });
+    }
   };
 
   return (

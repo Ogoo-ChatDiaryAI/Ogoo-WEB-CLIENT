@@ -126,7 +126,7 @@ const HiddenFileInput = styled.input`
   display: none;
 `;
 
-const DiaryCard = ({ date, emoji, image, title, content, type, onClick, onSave }) => {
+const DiaryCard = ({ diaryId, date, emoji, image, title, content, type, onClick, onSave }) => {
   const Icon =
     emoji === "happy"
       ? FaGrinSquint
@@ -160,7 +160,14 @@ const DiaryCard = ({ date, emoji, image, title, content, type, onClick, onSave }
 
   const handleSaveClick = () => {
     setIsEditing(false);
-    onSave({ date, emoji, image: selectedImage, title: editableTitle, content: editableContent });
+    onSave({
+      diaryId,
+      date,
+      emoji,
+      image: selectedImage,
+      title: editableTitle,
+      content: editableContent,
+    });
   };
 
   const handleImageChange = (e) => {

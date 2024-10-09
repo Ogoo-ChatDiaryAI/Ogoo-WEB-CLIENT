@@ -7,6 +7,7 @@ import Header from "../components/Header";
 import Modal from "../components/Modal";
 import Sidebar from "../components/Sidebar";
 import { useDiary } from "../context/useDiary";
+import { instance } from "../api/axios";
 
 const DiaryContainer = styled.div`
   display: flex;
@@ -32,8 +33,9 @@ const Diary = () => {
   const [selectedDiary, setSelectedDiary] = useState(null);
 
   useEffect(() => {
+    //showModal이 true일 경우
     if (location.state && location.state.showModal) {
-      const newDiary = location.state.newDiary;
+      const newDiary = location.state.newDiary; //newDiary를 받아옴
       setDiaries((prevDiaries) => {
         if (!prevDiaries.some((diary) => diary.date === newDiary.date)) {
           return [...prevDiaries, newDiary];
@@ -49,14 +51,27 @@ const Diary = () => {
   };
 
   const handleCloseModal = () => {
-    setSelectedDiary(null);
+    setSelectedDiary(null); //선택된 모달(떠있는 모달)의미하는 듯
   };
 
-  const handleSave = (updatedDiary) => {
-    setDiaries((prevDiaries) =>
-      prevDiaries.map((diary) => (diary.date === updatedDiary.date ? updatedDiary : diary))
-    );
-    setSelectedDiary(updatedDiary);
+  const handleSave = async (updatedDiary) => {
+    try {
+      const respoonse = await instance.post(`/diary/${updatedDiary.diaryId}`, {
+        title: updatedDiary.title,
+        diaryContent: updatedDiary.content,
+      });
+
+      setDiaries((prevDiaries) =>
+        prevDiaries.map((diary) => (diary.date === updatedDiary.date ? updatedDiary : diary))
+      );
+      setSelectedDiary(updatedDiary);
+    } catch (error) {
+      //임시로 그냥 대충 저장해둠 (요청 안보내고)
+      setDiaries((prevDiaries) =>
+        prevDiaries.map((diary) => (diary.date === updatedDiary.date ? updatedDiary : diary))
+      );
+      setSelectedDiary(updatedDiary);
+    }
   };
 
   return (
@@ -66,7 +81,8 @@ const Diary = () => {
       <CardContainer>
         {diaries.map((diary) => (
           <DiaryCard
-            key={diary.date}
+            key={diary.diaryId}
+            diaryId={diary.diaryId}
             date={diary.date}
             emoji={diary.emoji}
             image={diary.image}
@@ -79,13 +95,14 @@ const Diary = () => {
       {selectedDiary && (
         <Modal onClose={handleCloseModal}>
           <DiaryCard
+            diaryId={selectedDiary.diaryId}
             date={selectedDiary.date}
             emoji={selectedDiary.emoji}
             image={selectedDiary.image}
             title={selectedDiary.title}
             content={selectedDiary.content}
             type="detail"
-            onSave={handleSave}
+            onSave={(updatedDiary) => handleSave(updatedDiary)}
           />
         </Modal>
       )}
