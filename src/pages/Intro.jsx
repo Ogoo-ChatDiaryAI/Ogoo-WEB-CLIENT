@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaSignInAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -6,6 +6,7 @@ import Logo from "../assets/logo.png";
 import Footer from "../components/Footer";
 import IntroCard from "../components/IntroCard";
 import { useAuth } from "../context/useAuth";
+import { KAKAO_AUTH_URL } from "../auth/OAuth";
 
 const IntroContainer = styled.div`
   display: flex;
@@ -89,8 +90,16 @@ const cards = [
 
 const Intro = () => {
   const [currentCard, setCurrentCard] = useState(0);
-  const { login } = useAuth();
   const navigate = useNavigate();
+
+  const { isLoggedIn } = useAuth();
+  //로그인 상태면 HOME으로 가도록! (useEffect 사용해야함)
+  useEffect(() => {
+    if (isLoggedIn) {
+      console.log("User is logged in, navigating to /home");
+      navigate("/home");
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleNext = () => {
     if (currentCard < cards.length - 1) {
@@ -104,9 +113,12 @@ const Intro = () => {
     }
   };
 
+  const handleKakaoAuth = () => {
+    window.location.href = KAKAO_AUTH_URL;
+  };
+
   const handleLogin = () => {
-    login();
-    navigate("/home");
+    handleKakaoAuth();
   };
 
   return (

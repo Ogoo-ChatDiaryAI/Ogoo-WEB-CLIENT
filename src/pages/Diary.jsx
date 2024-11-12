@@ -33,6 +33,10 @@ const Diary = () => {
   const [selectedDiary, setSelectedDiary] = useState(null);
 
   useEffect(() => {
+    console.log(diaries);
+  }, [diaries]);
+
+  useEffect(() => {
     //showModal이 true일 경우
     if (location.state && location.state.showModal) {
       const newDiary = location.state.newDiary; //newDiary를 받아옴
@@ -55,8 +59,10 @@ const Diary = () => {
   };
 
   const handleSave = async (updatedDiary) => {
+    console.log(updatedDiary.diaryId);
+
     try {
-      const respoonse = await instance.post(`/diary/${updatedDiary.diaryId}`, {
+      const respoonse = await instance.post(`/diary/${updatedDiary.diaryId}/`, {
         title: updatedDiary.title,
         diaryContent: updatedDiary.content,
       });

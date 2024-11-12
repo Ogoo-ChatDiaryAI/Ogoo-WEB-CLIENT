@@ -128,19 +128,14 @@ const HiddenFileInput = styled.input`
 
 const DiaryCard = ({ diaryId, date, emoji, image, title, content, type, onClick, onSave }) => {
   const Icon =
-    emoji === "happy"
-      ? FaGrinSquint
-      : emoji === "sad"
-        ? FaSadTear
-        : emoji === "angry"
-          ? FaAngry
-          : emoji === "surprise"
-            ? FaSurprise
-            : emoji === "fear"
-              ? FaGrimace
-              : emoji === "neutral"
-                ? FaMeh
-                : FaSmile;
+    //- 실제 유효라고 하는 것만 유효하고, 나머지는 분석하지 못함
+    emoji === "happy" //실제 유효 ! (happy)
+      ? FaSadTear
+      : emoji === "anger" //실제 유효 ! (anger)
+        ? FaAngry
+        : emoji === "neutral" //실제 유효 ! (neutral)
+          ? FaMeh
+          : FaSmile; //실제 유효 ! (etc)
 
   const [isEditing, setIsEditing] = useState(false);
   const [editableTitle, setEditableTitle] = useState(title);
@@ -160,6 +155,7 @@ const DiaryCard = ({ diaryId, date, emoji, image, title, content, type, onClick,
 
   const handleSaveClick = () => {
     setIsEditing(false);
+    console.log(diaryId);
     onSave({
       diaryId,
       date,

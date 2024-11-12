@@ -6,6 +6,7 @@ import Diary from "./pages/Diary";
 import Home from "./pages/Home";
 import Intro from "./pages/Intro";
 import Report from "./pages/Report";
+import KakaoAuth from "./pages/KakaoAuth";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import ConvContextProvider from "./context/ConvContext";
 
@@ -21,6 +22,7 @@ function App() {
               <Route path="/chat" element={<ProtectedRoute element={<Chat />} />} />
               <Route path="/diary" element={<ProtectedRoute element={<Diary />} />} />
               <Route path="/report" element={<ProtectedRoute element={<Report />} />} />
+              <Route path="/oauth/events" element={<KakaoAuth />} />
             </Routes>
           </Router>
         </DiaryProvider>

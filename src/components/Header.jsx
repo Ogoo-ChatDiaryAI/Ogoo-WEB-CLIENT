@@ -39,7 +39,7 @@ const EndChatButton = styled.button`
 const Header = ({ text, type }) => {
   const navigate = useNavigate();
   const { setDiaries } = useDiary();
-  const { conversation } = useConvContext();
+  const { conversation, setConversation } = useConvContext();
 
   //초기 생성된 일기를 받아오고, 저장까지 한번에 하는 로직
   const handleEnd = async () => {
@@ -49,21 +49,22 @@ const Header = ({ text, type }) => {
     }));
 
     try {
-      const response = await instance.post("/chat/end", {
+      const response = await instance.post("/chat/end/", {
         //chatSessionID: "아직 안정함", -> 그냥 헤더로 변경하기로 함
         conversation: apiConversation,
       });
 
-      const response2 = await instance.post("/chat/diary/save", {
+      const response2 = await instance.post("/chat/diary/save/", {
         title: response.data.diaryTitle,
         diaryContent: response.data.diaryContent,
-        tempDiaryId: response.data.tempDiaryId,
+        diary_id: response.data.diaryId,
       });
       // 대화 내용 기반으로 일기 생성
+      console.log(response2.data.sentiment_analysis.emoji);
       const newDiary = {
-        diaryId: response2.data.diaryId,
+        diaryId: response.data.diaryId,
         date: new Date().toLocaleDateString(),
-        emoji: response.data.emoji,
+        emoji: response2.data.sentiment_analysis.sentiment,
         image: null,
         title: response.data.diaryTitle,
         content: response.data.diaryContent,
@@ -71,6 +72,13 @@ const Header = ({ text, type }) => {
 
       // DiaryContext를 업데이트하고 Diary 페이지로 이동
       setDiaries((prevDiaries) => [...prevDiaries, newDiary]);
+      setConversation([
+        {
+          text: "오늘 하루는 어땠어? 이야기를 들려줘 😎",
+          isUser: false,
+          date: new Date().toISOString().split("T")[0],
+        },
+      ]);
       navigate("/diary", { state: { newDiary, showModal: true } });
     } catch (error) {
       //아직 에러 -> 기본 생기는 거 테스트
