@@ -61,6 +61,7 @@ const Chatroom = () => {
       const currentDate = new Date().toISOString().split("T")[0]; // 현재 날짜
       const userMessage = { text: newMessage, isUser: true, date: currentDate };
 
+      //테스툥ㅇ
       //새로운 메세지 추가하여 messages 관리
       setMessages((prevMessages) => [...prevMessages, userMessage]);
       const updatedInfo = [
@@ -75,7 +76,6 @@ const Chatroom = () => {
       setLoading(true);
 
       //gpt로부터 응답 받아오는 로직
-
       try {
         const response = await callGPT(updatedInfo);
         const gptMessage = { text: response, isUser: false, date: currentDate };
