@@ -1,22 +1,12 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { FaPaperPlane } from "react-icons/fa";
 import styled, { keyframes } from "styled-components";
+import useConv from "../context/useConv";
+import useGPT from "../context/useGPT";
 import Message from "./Message";
-import { OpenAI } from "openai";
-import { useConvContext } from "../context/ConvContext";
 
 const Chatroom = () => {
-  const { conversation, setConversation } = useConvContext();
-  const nickName = "준혁";
-  const getNowDate = () => {
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const stringDate = `${year}-${month}-${day}`;
-
-    return stringDate;
-  };
+  const { conversation, setConversation } = useConv();
 
   //처음엔 전역 변수 conversation으로 초기화, 그 이후 messages 변하면 conversations에 반영
   const [messages, setMessages] = useState(conversation);
@@ -26,31 +16,28 @@ const Chatroom = () => {
 
   //시작은 대략 300토큰 사용 -> 점점 증가하며 1000토큰 사용이 평균, 1백만 토큰(대략 5천원) 사용 가능하다는 가정하에 1000번 대화할 수 있음
   const [newMessage, setNewMessage] = useState("");
-  const [loading, setLoading] = useState(false);
   const chatAreaRef = useRef();
-  const [gptRequiredInfo, setGptRequiredInfo] = useState([
-    {
-      role: "system",
-      content:
-        "넌 오늘 하루 있었던 일을 묻고, 적절한 질문과 공감을 통해 이야기를 반말로 들어주는 상담사야. 그리고 사용자와의 대화를 통해 일기를 추후 작성할거야. 그래서 일기로 작성하기 좋은 형태의 대화가 진행되도록 유도해줘. 근데, 너는 너무 대답을 길게 하지는 마. 필요할 때만 길게 하고, 왠만하면 오늘 무슨 일이 있었는지, 무슨 감정을 느꼈는지를 파악하기 위한 적절한 유도 질문을 해줘",
-    },
-  ]);
 
-  const configuration = {
-    organization: import.meta.env.VITE_OPENAI_ORG_ID,
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-    dangerouslyAllowBrowser: true,
-  };
-  const openai = new OpenAI(configuration);
+  const {
+    response,
+    loading: gptLoading,
+    getGPTResponse,
+    messages: gptMessages,
+  } = useGPT({
+    systemPrompt:
+      "너는 오늘 하루 있었던 일을 물어보고, 반말로 대화하며 적절한 질문과 공감을 통해 이야기를 들어주는 친구야. \
+      나중에 이 대화를 바탕으로 일기를 작성할 거니까, 일기 쓰기 좋은 흐름으로 대화를 이끌어줘. \
+      대답은 간결하게 하고, 이모지를 적절히 사용해서 분위기를 살려줘.\
+      내가 겪은 일과 느낀 감정을 구체적으로 표현할 수 있도록 부드럽게 질문을 이어가 줘.",
+  });
 
-  const callGPT = async (updatedInfo) => {
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: updatedInfo,
-    });
-
-    return response.choices[0].message.content;
-  };
+  useEffect(() => {
+    if (response) {
+      const currentDate = new Date().toISOString().split("T")[0];
+      const gptMessage = { text: response, isUser: false, date: currentDate };
+      setMessages((prevMessages) => [...prevMessages, gptMessage]);
+    }
+  }, [response]);
 
   const handleInputChange = (e) => {
     setNewMessage(e.target.value);
@@ -58,40 +45,15 @@ const Chatroom = () => {
 
   const handleSendMessage = async () => {
     if (newMessage.trim() !== "") {
-      const currentDate = new Date().toISOString().split("T")[0]; // 현재 날짜
+      const currentDate = new Date().toISOString().split("T")[0];
       const userMessage = { text: newMessage, isUser: true, date: currentDate };
 
-      //새로운 메세지 추가하여 messages 관리
+      // 사용자가 보낸 메시지를 추가
       setMessages((prevMessages) => [...prevMessages, userMessage]);
-      const updatedInfo = [
-        ...gptRequiredInfo,
-        {
-          role: "user",
-          content: newMessage,
-        },
-      ];
-      setGptRequiredInfo(updatedInfo);
       setNewMessage("");
-      setLoading(true);
 
-      //gpt로부터 응답 받아오는 로직
-
-      try {
-        const response = await callGPT(updatedInfo);
-        const gptMessage = { text: response, isUser: false, date: currentDate };
-        setMessages((prevMessages) => [...prevMessages, gptMessage]);
-        setGptRequiredInfo((prevInfo) => [
-          ...prevInfo,
-          {
-            role: "assistant",
-            content: response,
-          },
-        ]);
-      } catch (error) {
-        //console.error("GPT 호출 에러: ", error);
-      } finally {
-        setLoading(false);
-      }
+      // GPT로부터 응답 받아오는 로직
+      await getGPTResponse(newMessage);
     }
   };
 
@@ -124,7 +86,7 @@ const Chatroom = () => {
             />
           );
         })}
-        {loading && (
+        {gptLoading && (
           <Message
             text={
               <LoadingDots>

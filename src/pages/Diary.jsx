@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
+import { instance } from "../api/axios";
 import DiaryCard from "../components/DiaryCard";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Modal from "../components/Modal";
 import Sidebar from "../components/Sidebar";
 import { useDiary } from "../context/useDiary";
-import { instance } from "../api/axios";
 
 const DiaryContainer = styled.div`
   display: flex;
@@ -33,7 +33,7 @@ const Diary = () => {
   const [selectedDiary, setSelectedDiary] = useState(null);
 
   useEffect(() => {
-    console.log(diaries);
+    // console.log(diaries);
   }, [diaries]);
 
   useEffect(() => {
@@ -59,10 +59,8 @@ const Diary = () => {
   };
 
   const handleSave = async (updatedDiary) => {
-    console.log(updatedDiary.diaryId);
-
     try {
-      const respoonse = await instance.post(`/diary/${updatedDiary.diaryId}/`, {
+      const response = await instance.post(`/diary/${updatedDiary.diaryId}/`, {
         title: updatedDiary.title,
         diaryContent: updatedDiary.content,
       });

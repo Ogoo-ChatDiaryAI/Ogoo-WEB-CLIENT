@@ -1,9 +1,8 @@
-import { useContext, createContext, useState } from "react";
-import React from "react";
+import React, { createContext, useState } from "react";
 
 const ConvContext = createContext();
 
-const ConvContextProvider = ({ children }) => {
+export const ConvProvider = ({ children }) => {
   const [conversation, setConversation] = useState([
     {
       text: "오늘 하루는 어땠어? 이야기를 들려줘 😎",
@@ -19,14 +18,4 @@ const ConvContextProvider = ({ children }) => {
   );
 };
 
-export default ConvContextProvider;
-
-export const useConvContext = () => {
-  const context = useContext(ConvContext);
-  //context를 사용할 수 없으면 null 반환
-  if (!context) {
-    throw new Error("useConvContext must be used within a ContextProvider");
-  }
-
-  return context;
-};
+export default ConvContext;
