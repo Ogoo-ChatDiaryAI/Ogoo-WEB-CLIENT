@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const IntroCardContainer = styled.div`
-  width: 400px;
+  width: 800px;
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -14,14 +14,19 @@ const IntroCardContainer = styled.div`
 `;
 
 const ImageContainer = styled.div`
-  width: 400px;
+  width: 800px;
   height: 300px;
-  background-color: #f0f0f0;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 20px;
   text-align: center;
+`;
+
+const BoardImg = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 `;
 
 const Text = styled.div`
@@ -31,12 +36,11 @@ const Text = styled.div`
   margin-bottom: 20px;
 `;
 
-const IntroCard = ({ imageText, cardText }) => {
+const IntroCard = ({ imgSrc, imageText, cardText }) => {
   return (
     <IntroCardContainer>
       <ImageContainer>
-        {/* 실제 서비스 화면 이미지 추가 예정 */}
-        <span>{imageText}</span>
+        <BoardImg src={imgSrc} alt={imageText} />
       </ImageContainer>
       <Text>{cardText}</Text>
     </IntroCardContainer>
