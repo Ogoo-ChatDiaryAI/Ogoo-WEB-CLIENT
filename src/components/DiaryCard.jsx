@@ -1,14 +1,9 @@
 import React, { useState } from "react";
-import {
-  FaAngry,
-  FaGrimace,
-  FaGrinSquint,
-  FaMeh,
-  FaSadTear,
-  FaSmile,
-  FaSurprise,
-} from "react-icons/fa";
 import styled from "styled-components";
+import Anger from "../assets/emoji/anger.png";
+import Negative from "../assets/emoji/negative.png";
+import Neutral from "../assets/emoji/neutral.png";
+import Positive from "../assets/emoji/positive.png";
 
 const DiaryCardContainer = styled.div`
   background-color: #fff;
@@ -19,9 +14,9 @@ const DiaryCardContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: ${(props) => (props.type === "detail" ? "auto" : "450px")};
+  height: ${(props) => (props.type === "detail" ? "auto" : "300px")};
   width: ${(props) => (props.type === "detail" ? "500px" : "350px")};
-  min-height: ${(props) => (props.type === "detail" ? "660px" : "auto")};
+  min-height: ${(props) => (props.type === "detail" ? "580px" : "auto")};
   cursor: ${(props) => (props.type === "simple" ? "pointer" : "default")};
 `;
 
@@ -29,7 +24,6 @@ const CardHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
   top: 0;
   background-color: #fff;
   padding-bottom: 10px;
@@ -38,79 +32,47 @@ const CardHeader = styled.div`
 
 const DateText = styled.div`
   color: black;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: bold;
   margin-left: 10px;
 `;
 
-const ImageContainer = styled.div`
-  background-color: #e0e0e0;
-  width: 100%;
-  max-width: 300px;
-  height: auto;
-  max-height: 300px;
-  aspect-ratio: 1/1;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 10px auto;
-  flex-shrink: 0;
-`;
-
-const PlaceholderText = styled.div`
-  color: #888;
-  font-size: 14px;
-`;
-
-const ImagePreview = styled.img`
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
-`;
-
 const EditableTitle = styled.input`
-  font-size: 18px;
+  color: #555;
+  font-size: 26px;
   font-weight: bold;
   text-align: center;
   border: none;
   background: none;
   width: 100%;
-  margin-bottom: 10px;
 `;
 
 const CardTitle = styled.h2`
   color: black;
-  font-size: 18px;
+  font-size: 30px;
   font-weight: bold;
   text-align: center;
 `;
 
 const EditableContent = styled.textarea`
-  font-size: 14px;
+  font-size: 15px;
   color: #555;
-  margin-top: 10px;
   width: 100%;
-  height: 100px;
+  height: 250px;
   border: none;
   background: none;
 `;
 
 const DiaryContent = styled.div`
-  font-size: 14px;
+  font-size: 16px;
   color: #555;
-  margin-top: 10px;
-  min-height: 100px;
-  max-height: 300px;
   overflow-y: auto;
-  padding-right: 10px;
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  margin-top: 20px;
 `;
 
 const Button = styled.button`
@@ -122,25 +84,19 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const HiddenFileInput = styled.input`
-  display: none;
-`;
-
-const DiaryCard = ({ diaryId, date, emoji, image, title, content, type, onClick, onSave }) => {
+const DiaryCard = ({ diaryId, date, emoji, title, content, type, onClick, onSave }) => {
   const Icon =
-    //- 실제 유효라고 하는 것만 유효하고, 나머지는 분석하지 못함
-    emoji === "happy" //실제 유효 ! (happy)
-      ? FaSadTear
-      : emoji === "anger" //실제 유효 ! (anger)
-        ? FaAngry
-        : emoji === "neutral" //실제 유효 ! (neutral)
-          ? FaMeh
-          : FaSmile; //실제 유효 ! (etc)
+    emoji === "happy"
+      ? Positive
+      : emoji === "anger"
+        ? Anger
+        : emoji === "neutral"
+          ? Neutral
+          : Negative;
 
   const [isEditing, setIsEditing] = useState(false);
   const [editableTitle, setEditableTitle] = useState(title);
   const [editableContent, setEditableContent] = useState(content);
-  const [selectedImage, setSelectedImage] = useState(image);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -148,67 +104,28 @@ const DiaryCard = ({ diaryId, date, emoji, image, title, content, type, onClick,
 
   const handleCancelClick = () => {
     setIsEditing(false);
-    setSelectedImage(image);
     setEditableTitle(title);
     setEditableContent(content);
   };
 
   const handleSaveClick = () => {
     setIsEditing(false);
-    console.log(diaryId);
+    // console.log(diaryId);
     onSave({
       diaryId,
       date,
       emoji,
-      image: selectedImage,
       title: editableTitle,
       content: editableContent,
     });
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   return (
     <DiaryCardContainer type={type} onClick={type === "simple" ? onClick : null}>
       <CardHeader type={type}>
-        <Icon color="#FFD700" size={24} />
+        <img src={Icon} alt="Emoji" style={{ width: "36px", height: "36px" }} />
         <DateText>{date}</DateText>
       </CardHeader>
-      {isEditing ? (
-        <ImageContainer
-          isEditing={isEditing}
-          onClick={() => document.getElementById(`fileInput-${date}`).click()}
-        >
-          {selectedImage ? (
-            <ImagePreview src={selectedImage} alt="Selected" />
-          ) : (
-            <PlaceholderText>클릭해서 사진 넣기</PlaceholderText>
-          )}
-          <HiddenFileInput
-            id={`fileInput-${date}`}
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-        </ImageContainer>
-      ) : (
-        <ImageContainer type={type}>
-          {selectedImage ? (
-            <ImagePreview src={selectedImage} alt="사진" />
-          ) : (
-            <PlaceholderText>사진 없음</PlaceholderText>
-          )}
-        </ImageContainer>
-      )}
       {isEditing ? (
         <EditableTitle value={editableTitle} onChange={(e) => setEditableTitle(e.target.value)} />
       ) : (
@@ -220,7 +137,7 @@ const DiaryCard = ({ diaryId, date, emoji, image, title, content, type, onClick,
           onChange={(e) => setEditableContent(e.target.value)}
         />
       ) : (
-        <DiaryContent>{editableContent}</DiaryContent>
+        <DiaryContent>{content}</DiaryContent>
       )}
       {type === "detail" && (
         <ButtonContainer>

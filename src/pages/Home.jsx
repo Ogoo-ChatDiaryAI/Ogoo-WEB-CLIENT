@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import Quote from "../components/Quote";
 import Sidebar from "../components/Sidebar";
 
 const HomeContainer = styled.div`
@@ -16,8 +17,7 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   background-color: white;
-  margin-left: 100px; /* 사이드바의 너비만큼 마진을 줍니다 */
-  margin-bottom: 64px; /* 푸터의 높이만큼 마진을 줍니다 */
+  margin: 60px 0 64px 100px;
   overflow-y: auto; /* 세로 스크롤 허용 */
   padding: 50px;
 `;
@@ -27,7 +27,9 @@ function Home() {
     <HomeContainer>
       <Header text={"홈"} />
       <Sidebar activeItem={"home"} />
-      <Content>{}</Content>
+      <Content>
+        <Quote />
+      </Content>
       <Footer />
     </HomeContainer>
   );

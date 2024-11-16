@@ -1,9 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useDiary } from "../context/useDiary";
 import { instance } from "../api/axios";
-import { useConvContext } from "../context/ConvContext";
+import Ogoo from "../assets/ogoo.png";
+import useConv from "../context/useConv";
+import { useDiary } from "../context/useDiary";
 
 const HeaderContainer = styled.div`
   width: calc(100% - 140px);
@@ -19,6 +20,18 @@ const HeaderContainer = styled.div`
   left: 100px;
   z-index: 1;
   user-select: none;
+`;
+
+const LeftContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const OgooImg = styled.img`
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  margin-left: 15px;
 `;
 
 const Title = styled.div`
@@ -39,12 +52,12 @@ const EndChatButton = styled.button`
 const Header = ({ text, type }) => {
   const navigate = useNavigate();
   const { setDiaries } = useDiary();
-  const { conversation, setConversation } = useConvContext();
+  const { conversation, setConversation } = useConv();
 
   //초기 생성된 일기를 받아오고, 저장까지 한번에 하는 로직
   const handleEnd = async () => {
     const apiConversation = conversation.map((obj) => ({
-      from: obj.isUser ? "user" : "Ogoo",
+      from: obj.isUser ? "user" : "오구",
       text: obj.text,
     }));
 
@@ -60,7 +73,7 @@ const Header = ({ text, type }) => {
         diary_id: response.data.diaryId,
       });
       // 대화 내용 기반으로 일기 생성
-      console.log(response2.data.sentiment_analysis.emoji);
+      // console.log(response2.data.sentiment_analysis);
       const newDiary = {
         diaryId: response.data.diaryId,
         date: new Date().toLocaleDateString(),
@@ -99,7 +112,10 @@ const Header = ({ text, type }) => {
 
   return (
     <HeaderContainer>
-      <Title>{text}</Title>
+      <LeftContainer>
+        <Title>{text}</Title>
+        {type === "chat" ? <OgooImg src={Ogoo} alt="Ogoo" /> : null}
+      </LeftContainer>
       {type === "chat" ? (
         <EndChatButton onClick={() => handleEnd()}>대화 종료</EndChatButton>
       ) : null}
