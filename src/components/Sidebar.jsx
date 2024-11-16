@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaBook, FaCog, FaComment, FaHome, FaUserCircle } from "react-icons/fa";
+import { FaBook, FaComment, FaHome, FaUserCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAuth } from "../context/useAuth";
@@ -150,12 +150,12 @@ const Sidebar = ({ activeItem }) => {
           </IconWrapper>
         </IconGroupTop>
         <IconGroupBottom>
-          <IconWrapper onClick={handleSettings}>
+          {/* <IconWrapper onClick={handleSettings}>
             <Icon active={activeIcon === "settings"}>
               <FaCog />
               <IconText active={activeIcon === "settings"}>설정</IconText>
             </Icon>
-          </IconWrapper>
+          </IconWrapper> */}
           <IconWrapper onClick={handleLogout}>
             <Icon active={activeIcon === "user"}>
               <LargeUserIcon />
@@ -163,7 +163,7 @@ const Sidebar = ({ activeItem }) => {
           </IconWrapper>
         </IconGroupBottom>
       </SidebarContainer>
-      {activeIcon === "settings" ? (
+      {/* {activeIcon === "settings" ? (
         <Modal onClose={handleCloseModal}>
           <ModalContainer>
             <ModalTitle>설정</ModalTitle>
@@ -175,7 +175,8 @@ const Sidebar = ({ activeItem }) => {
             </ModalButton>
           </ModalContainer>
         </Modal>
-      ) : activeIcon === "user" ? (
+      ) :  */}
+      {activeIcon === "user" ? (
         <Modal onClose={handleCloseModal}>
           <ModalContainer>
             <ModalTitle>로그아웃 하시겠어요?</ModalTitle>
