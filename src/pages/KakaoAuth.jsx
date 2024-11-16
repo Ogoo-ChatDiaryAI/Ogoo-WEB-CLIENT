@@ -38,6 +38,7 @@ const KakaoAuth = () => {
       localStorage.setItem("accessToken", data.access_token);
       login();
       navigate("/home");
+      //window.location.reload();
     } catch (error) {
       console.log("during login Error: ", error);
       navigate("/");

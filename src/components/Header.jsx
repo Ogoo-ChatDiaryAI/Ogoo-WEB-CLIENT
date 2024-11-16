@@ -95,6 +95,7 @@ const Header = ({ text, type }) => {
       navigate("/diary", { state: { newDiary, showModal: true } });
     } catch (error) {
       //아직 에러 -> 기본 생기는 거 테스트
+      console.log(error);
       const newDiary = {
         diaryId: -1,
         date: new Date().toLocaleDateString(),

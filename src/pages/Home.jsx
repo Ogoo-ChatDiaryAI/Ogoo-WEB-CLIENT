@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Quote from "../components/Quote";
 import Sidebar from "../components/Sidebar";
+import { useDiary } from "../context/useDiary";
+import { instance } from "../api/axios";
 
 const HomeContainer = styled.div`
   display: flex;
@@ -23,6 +25,17 @@ const Content = styled.div`
 `;
 
 function Home() {
+  const { diaries, setDiaries } = useDiary();
+
+  useEffect(() => {
+    const fetchDiaries = async () => {
+      try {
+        const response = await instance.get("/diary/list/");
+        setDiaries(response.data.diaries);
+      } catch (error) {}
+    };
+    fetchDiaries();
+  }, []);
   return (
     <HomeContainer>
       <Header text={"홈"} />

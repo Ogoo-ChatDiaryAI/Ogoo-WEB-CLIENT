@@ -86,7 +86,7 @@ const Button = styled.button`
 
 const DiaryCard = ({ diaryId, date, emoji, title, content, type, onClick, onSave }) => {
   const Icon =
-    emoji === "happy"
+    emoji === "positive" || emoji === "happy"
       ? Positive
       : emoji === "anger"
         ? Anger
