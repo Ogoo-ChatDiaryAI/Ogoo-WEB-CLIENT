@@ -22,7 +22,7 @@ const MessageBubble = styled.div`
 
 const MessageText = styled.div`
   color: black;
-  font-size: 18px;
+  font-size: 22px;
   font-family: Sunflower;
   line-height: 1.4;
 `;
@@ -31,7 +31,7 @@ const DateDividerContainer = styled.div`
   display: flex;
   align-items: center;
   margin: 20px 0;
-  font-size: 15px;
+  font-size: 18px;
   color: #888;
   user-select: none;
 `;

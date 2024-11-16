@@ -9,7 +9,7 @@ const DiaryCardContainer = styled.div`
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  padding: 25px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -39,7 +39,7 @@ const DateText = styled.div`
 
 const EditableTitle = styled.input`
   color: #555;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: bold;
   text-align: center;
   border: none;
@@ -49,7 +49,7 @@ const EditableTitle = styled.input`
 
 const CardTitle = styled.h2`
   color: black;
-  font-size: 30px;
+  font-size: 32px;
   font-weight: bold;
   text-align: center;
 `;
@@ -76,6 +76,7 @@ const ButtonContainer = styled.div`
 `;
 
 const Button = styled.button`
+  font-size: 20px;
   background-color: ${(props) => (props.primary ? "#4caf50" : "#ccc")};
   color: white;
   border: none;

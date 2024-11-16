@@ -65,7 +65,7 @@ const Button = styled.button`
   border-radius: 5px;
   border: none;
   cursor: ${(props) => (props.disabled ? "default" : "pointer")};
-  font-size: 12px;
+  font-size: 20px;
   text-decoration: none;
 `;
 

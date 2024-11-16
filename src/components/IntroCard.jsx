@@ -31,7 +31,7 @@ const BoardImg = styled.img`
 
 const Text = styled.div`
   color: black;
-  font-size: 20px;
+  font-size: 28px;
   text-align: left;
   margin-bottom: 20px;
 `;

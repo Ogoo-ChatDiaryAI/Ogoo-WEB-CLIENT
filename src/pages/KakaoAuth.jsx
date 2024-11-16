@@ -34,19 +34,19 @@ const KakaoAuth = () => {
       }
       //json으로 변환해야함
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       localStorage.setItem("accessToken", data.access_token);
       login();
       navigate("/home");
       //window.location.reload();
     } catch (error) {
-      console.log("during login Error: ", error);
+      // console.log("during login Error: ", error);
       navigate("/");
     }
   };
 
   getAccessToken();
-  alert("로그인중");
+  // alert("로그인중");
   return <div></div>;
 };
 

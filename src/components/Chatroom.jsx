@@ -137,7 +137,7 @@ const ChatAreaContainer = styled.div`
 
 const ChatInputContainer = styled.div`
   width: calc(100% - 100px - 10px);
-  height: 30px;
+  height: 38px;
   position: fixed;
   bottom: 64px;
   left: 100px;
@@ -156,11 +156,13 @@ const Input = styled.input`
   border-radius: 10px;
   border: 1px solid #ccc;
   outline: none;
-  font-size: 14px;
+  font-size: 18px;
   font-family: Dongle;
 `;
 
 const SendButton = styled.button`
+  width: 40px;
+  height: 40px;
   background-color: #4caf50;
   color: white;
   padding: 10px;

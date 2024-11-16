@@ -111,7 +111,7 @@ const QuoteMsg = styled.div`
 
 const QuoteAuthor = styled.div`
   font-family: Jua;
-  font-size: 20px;
+  font-size: 25px;
   text-align: right;
 `;
 
@@ -141,7 +141,7 @@ const AdviceContent = styled.div`
   z-index: 2;
   color: #f5f5f5; // 글자 색상
   font-family: Sunflower;
-  font-size: 20px;
+  font-size: 22px;
   text-align: center;
   padding: 10px;
   width: 70%;

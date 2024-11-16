@@ -82,7 +82,7 @@ const ModalContainer = styled.div`
 
 const ModalTitle = styled.div`
   color: black;
-  font-size: 32px;
+  font-size: 35px;
 `;
 
 const ModalContent = styled.div`
@@ -99,6 +99,7 @@ const ModalButtonContainer = styled.div`
 const ModalButton = styled.button`
   background-color: ${(props) => (props.active ? "#4caf50" : "#ccc")};
   color: white;
+  font-size: 20px;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
@@ -111,9 +112,9 @@ const Sidebar = ({ activeItem }) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
-  const handleSettings = () => {
-    setActiveIcon("settings");
-  };
+  // const handleSettings = () => {
+  //   setActiveIcon("settings");
+  // };
 
   const handleLogout = () => {
     setActiveIcon("user");

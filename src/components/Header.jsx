@@ -35,12 +35,12 @@ const OgooImg = styled.img`
 `;
 
 const Title = styled.div`
-  font-size: 24px;
+  font-size: 30px;
   color: black;
 `;
 
 const EndChatButton = styled.button`
-  font-size: 14px;
+  font-size: 20px;
   background-color: #4caf50;
   color: white;
   border: none;

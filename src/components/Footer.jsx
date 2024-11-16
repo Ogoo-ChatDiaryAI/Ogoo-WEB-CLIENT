@@ -18,6 +18,7 @@ const FooterContainer = styled.div`
 `;
 
 const FooterText = styled.div`
+  font-size: 18px;
   user-select: none;
 `;
 
