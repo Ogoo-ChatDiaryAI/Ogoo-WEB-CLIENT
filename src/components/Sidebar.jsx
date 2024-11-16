@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaBell, FaBook, FaChartBar, FaCog, FaComment, FaHome, FaUserCircle } from "react-icons/fa";
+import { FaBook, FaCog, FaComment, FaHome, FaUserCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAuth } from "../context/useAuth";
@@ -64,7 +64,7 @@ const Icon = styled.div`
 `;
 
 const IconText = styled.span`
-  font-size: 14px;
+  font-size: 18px;
   margin-top: 5px;
   color: ${(props) => (props.active ? "#4CAF50" : "#777")};
 `;
@@ -111,10 +111,6 @@ const Sidebar = ({ activeItem }) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
-  const handleNotification = () => {
-    setActiveIcon("notifications");
-  };
-
   const handleSettings = () => {
     setActiveIcon("settings");
   };
@@ -152,21 +148,8 @@ const Sidebar = ({ activeItem }) => {
               <IconText active={activeItem === "diary"}>나의 일기장</IconText>
             </Icon>
           </IconWrapper>
-          <IconWrapper onClick={() => navigate("/report")}>
-            <ActiveBar active={activeItem === "report"} />
-            <Icon active={activeItem === "report"}>
-              <FaChartBar />
-              <IconText active={activeItem === "report"}>감정 레포트</IconText>
-            </Icon>
-          </IconWrapper>
         </IconGroupTop>
         <IconGroupBottom>
-          <IconWrapper onClick={handleNotification}>
-            <Icon active={activeIcon === "notifications"}>
-              <FaBell />
-              <IconText active={activeIcon === "notifications"}>알림</IconText>
-            </Icon>
-          </IconWrapper>
           <IconWrapper onClick={handleSettings}>
             <Icon active={activeIcon === "settings"}>
               <FaCog />
@@ -180,28 +163,12 @@ const Sidebar = ({ activeItem }) => {
           </IconWrapper>
         </IconGroupBottom>
       </SidebarContainer>
-      {activeIcon === "notifications" ? (
-        <Modal onClose={handleCloseModal}>
-          <ModalContainer>
-            <ModalTitle>알림</ModalTitle>
-            <ModalContent>
-              <p>알림 1</p>
-              <p>알림 2</p>
-              <p>알림 3</p>
-            </ModalContent>
-            <ModalButton active onClick={handleCloseModal}>
-              확인
-            </ModalButton>
-          </ModalContainer>
-        </Modal>
-      ) : activeIcon === "settings" ? (
+      {activeIcon === "settings" ? (
         <Modal onClose={handleCloseModal}>
           <ModalContainer>
             <ModalTitle>설정</ModalTitle>
             <ModalContent>
-              <p>유저 이름 변경</p>
-              <p>글자 크기 변경</p>
-              <p>기타등등</p>
+              <p>다크 모드</p>
             </ModalContent>
             <ModalButton active onClick={handleCloseModal}>
               확인
