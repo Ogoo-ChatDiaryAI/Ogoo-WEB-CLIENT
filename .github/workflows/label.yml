@@ -1,0 +1,47 @@
+# labeler "full" schema
+
+# enable labeler on issues, prs, or both.
+enable:
+  issues: true
+  prs: true
+# comments object allows you to specify a different message for issues and prs
+
+comments:
+  issues: |
+    라벨 지정 제대로 되었는지 체크 한 번씩 하기 🧞‍♂️ 작업도 화이팅 !!!!!!! 😍
+  prs: |
+    라벨 지정 제대로 되었는지 체크 한 번씩 하기 🧞‍♂️ 고생했어요 다음 작업도 화이팅 !!!!!! 😍
+    
+
+# Labels is an object where:
+# - keys are labels
+# - values are objects of { include: [ pattern ], exclude: [ pattern ] }
+#    - pattern must be a valid regex, and is applied globally to
+#      title + description of issues and/or prs (see enabled config above)
+#    - 'include' patterns will associate a label if any of these patterns match
+#    - 'exclude' patterns will ignore this label if any of these patterns match
+labels:
+  ':tada: init':
+    include:
+      - '\binit\b'
+  ':sparkles: feat':
+    include:
+      - '\bfeat\b'
+  ':bug: fix':
+    include:
+      - '\bfix\b'
+  ':package: chore':
+    include:
+      - '\bchore\b'
+  ':recycle: refactor':
+    include:
+      - '\brefactor\b'
+  ':lipstick: design':
+    include:
+      - '\bdesign\b'
+  ':ambulance: hotfix':
+    include:
+      - '\bhotfix\b'
+  ':memo: docs':
+    include:
+      - '\bdocs\b'
