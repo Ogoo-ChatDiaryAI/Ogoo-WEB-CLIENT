@@ -97,6 +97,7 @@ const cards = [
 ];
 
 const Intro = () => {
+  alert("환영합니다!");
   const [currentCard, setCurrentCard] = useState(0);
   const navigate = useNavigate();
 

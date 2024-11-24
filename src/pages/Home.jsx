@@ -25,7 +25,6 @@ const Content = styled.div`
 `;
 
 function Home() {
-  alert("환영합니다!");
   const { diaries, setDiaries } = useDiary();
 
   useEffect(() => {
