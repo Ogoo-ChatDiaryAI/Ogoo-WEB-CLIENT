@@ -10,6 +10,7 @@ import KakaoAuth from "./pages/KakaoAuth";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
+  console.log("hi, we are kong, lee, kim");
   return (
     <AuthProvider>
       <ConvProvider>
