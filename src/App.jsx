@@ -11,6 +11,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
   console.log("hi, we are kong, lee, kim");
+  console.log("supported by jerry");
   return (
     <AuthProvider>
       <ConvProvider>
